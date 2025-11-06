@@ -1,0 +1,360 @@
+{% extends "base.html" %}
+
+{% block title %}Training Dashboard - TSM Color Transfer{% endblock %}
+
+{% block extra_head %}
+<style>
+    .tab-button {
+        @apply px-6 py-3 rounded-t-lg font-medium transition-all duration-200;
+    }
+    .tab-button.active {
+        @apply bg-white text-primary-600 shadow-md;
+    }
+    .tab-button:not(.active) {
+        @apply bg-gray-100 text-gray-600 hover:bg-gray-200;
+    }
+    .tab-content {
+        @apply hidden;
+    }
+    .tab-content.active {
+        @apply block;
+    }
+    .stat-card {
+        @apply bg-gradient-to-br from-primary-50 to-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow;
+    }
+    .example-card {
+        @apply bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-all duration-200;
+    }
+    .worker-badge {
+        @apply inline-block px-3 py-1 rounded-full text-sm font-medium;
+    }
+    .progress-bar {
+        @apply h-2 bg-primary-500 rounded-full transition-all duration-300;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-4xl font-bold gradient-text mb-2">Training Dashboard</h1>
+        <p class="text-gray-600">Manage training data, train models, and monitor performance</p>
+    </div>
+
+    <!-- Statistics Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="stat-card">
+            <div class="flex items-center justify-between mb-2">
+                <i class="fas fa-database text-2xl text-primary-500"></i>
+                <span class="text-3xl font-bold gradient-text" id="stat-total-examples">0</span>
+            </div>
+            <p class="text-sm text-gray-600">Training Examples</p>
+        </div>
+
+        <div class="stat-card">
+            <div class="flex items-center justify-between mb-2">
+                <i class="fas fa-graduation-cap text-2xl text-green-500"></i>
+                <span class="text-3xl font-bold text-green-600" id="stat-training-sessions">0</span>
+            </div>
+            <p class="text-sm text-gray-600">Training Sessions</p>
+        </div>
+
+        <div class="stat-card">
+            <div class="flex items-center justify-between mb-2">
+                <i class="fas fa-chart-line text-2xl text-blue-500"></i>
+                <span class="text-3xl font-bold text-blue-600" id="stat-avg-accuracy">-</span>
+            </div>
+            <p class="text-sm text-gray-600">Avg Accuracy</p>
+        </div>
+
+        <div class="stat-card">
+            <div class="flex items-center justify-between mb-2">
+                <i class="fas fa-trophy text-2xl text-yellow-500"></i>
+                <span class="text-3xl font-bold text-yellow-600" id="stat-best-worker">-</span>
+            </div>
+            <p class="text-sm text-gray-600">Best Worker</p>
+        </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="mb-8">
+        <div class="flex flex-wrap gap-2 border-b border-gray-200">
+            <button class="tab-button active" data-tab="dataset">
+                <i class="fas fa-images mr-2"></i>Dataset
+            </button>
+            <button class="tab-button" data-tab="training">
+                <i class="fas fa-brain mr-2"></i>Training
+            </button>
+            <button class="tab-button" data-tab="validation">
+                <i class="fas fa-check-circle mr-2"></i>Validation
+            </button>
+            <button class="tab-button" data-tab="weights">
+                <i class="fas fa-sliders-h mr-2"></i>Weights
+            </button>
+            <button class="tab-button" data-tab="sessions">
+                <i class="fas fa-history mr-2"></i>History
+            </button>
+        </div>
+    </div>
+
+    <!-- Dataset Tab -->
+    <div id="tab-dataset" class="tab-content active">
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-4">Add Training Example</h2>
+            <p class="text-gray-600 mb-6">Upload source, target, and ground truth images to create a labeled training example.</p>
+
+            <form id="add-example-form" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Source Image -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Source Image</label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-primary-500 transition-colors cursor-pointer" id="source-dropzone">
+                            <input type="file" id="source-input" accept="image/*" class="hidden">
+                            <i class="fas fa-upload text-3xl text-gray-400 mb-2"></i>
+                            <p class="text-sm text-gray-600">Click or drag source image</p>
+                        </div>
+                        <div id="source-preview" class="hidden mt-2">
+                            <img class="w-full h-32 object-cover rounded-lg" alt="Source preview">
+                            <p class="text-xs text-gray-500 mt-1" id="source-name"></p>
+                        </div>
+                    </div>
+
+                    <!-- Target Image -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Target Image</label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-primary-500 transition-colors cursor-pointer" id="target-dropzone">
+                            <input type="file" id="target-input" accept="image/*" class="hidden">
+                            <i class="fas fa-upload text-3xl text-gray-400 mb-2"></i>
+                            <p class="text-sm text-gray-600">Click or drag target image</p>
+                        </div>
+                        <div id="target-preview" class="hidden mt-2">
+                            <img class="w-full h-32 object-cover rounded-lg" alt="Target preview">
+                            <p class="text-xs text-gray-500 mt-1" id="target-name"></p>
+                        </div>
+                    </div>
+
+                    <!-- Ground Truth Image -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Ground Truth (Desired Result)</label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-primary-500 transition-colors cursor-pointer" id="ground-truth-dropzone">
+                            <input type="file" id="ground-truth-input" accept="image/*" class="hidden">
+                            <i class="fas fa-upload text-3xl text-gray-400 mb-2"></i>
+                            <p class="text-sm text-gray-600">Click or drag ground truth</p>
+                        </div>
+                        <div id="ground-truth-preview" class="hidden mt-2">
+                            <img class="w-full h-32 object-cover rounded-lg" alt="Ground truth preview">
+                            <p class="text-xs text-gray-500 mt-1" id="ground-truth-name"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metadata (Optional) -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Metadata (Optional)</label>
+                    <textarea id="metadata-input" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder='{"category": "landscape", "difficulty": "medium"}'></textarea>
+                    <p class="text-xs text-gray-500 mt-1">JSON format for additional information</p>
+                </div>
+
+                <button type="submit" class="gradient-bg text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed" id="add-example-btn" disabled>
+                    <i class="fas fa-plus mr-2"></i>Add Training Example
+                </button>
+            </form>
+        </div>
+
+        <!-- Examples List -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl font-bold">Training Dataset</h2>
+                <button id="refresh-examples-btn" class="text-primary-600 hover:text-primary-700">
+                    <i class="fas fa-sync-alt mr-2"></i>Refresh
+                </button>
+            </div>
+
+            <div id="examples-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Examples will be loaded here -->
+            </div>
+
+            <div id="no-examples" class="hidden text-center py-12">
+                <i class="fas fa-folder-open text-6xl text-gray-300 mb-4"></i>
+                <p class="text-gray-500">No training examples yet. Add your first example above!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Training Tab -->
+    <div id="tab-training" class="tab-content">
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-4">Start Training Session</h2>
+            <p class="text-gray-600 mb-6">Configure and run a training session to update worker weights based on labeled examples.</p>
+
+            <form id="training-form" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Number of Examples</label>
+                        <input type="number" id="num-examples-input" min="1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500" placeholder="Leave empty to use all">
+                        <p class="text-xs text-gray-500 mt-1">Leave empty to use all available examples</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Epochs</label>
+                        <input type="number" id="epochs-input" min="1" value="1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500" required>
+                        <p class="text-xs text-gray-500 mt-1">Number of times to iterate through the dataset</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Validation Split</label>
+                        <input type="number" id="validation-split-input" min="0" max="1" step="0.1" value="0.2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500" required>
+                        <p class="text-xs text-gray-500 mt-1">Fraction of data to use for validation (0.0 - 1.0)</p>
+                    </div>
+
+                    <div class="flex items-end">
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" id="verbose-input" class="rounded text-primary-600 focus:ring-primary-500">
+                            <span class="text-sm font-medium text-gray-700">Verbose logging</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="gradient-bg text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity" id="start-training-btn">
+                    <i class="fas fa-play mr-2"></i>Start Training
+                </button>
+            </form>
+        </div>
+
+        <!-- Training Progress -->
+        <div id="training-progress" class="hidden bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-xl font-bold mb-4">Training in Progress...</h3>
+
+            <div class="mb-4">
+                <div class="flex justify-between text-sm text-gray-600 mb-2">
+                    <span>Progress</span>
+                    <span id="training-progress-text">0%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div class="progress-bar" id="training-progress-bar" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div id="training-results" class="space-y-4">
+                <!-- Training results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Validation Tab -->
+    <div id="tab-validation" class="tab-content">
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-2xl font-bold mb-4">Model Validation</h2>
+            <p class="text-gray-600 mb-6">Validate the current model weights against training examples.</p>
+
+            <button id="validate-btn" class="gradient-bg text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity mb-6">
+                <i class="fas fa-check-circle mr-2"></i>Run Validation
+            </button>
+
+            <div id="validation-results" class="hidden">
+                <h3 class="text-xl font-bold mb-4">Validation Results</h3>
+                <div id="validation-metrics" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <!-- Validation metrics will appear here -->
+                </div>
+
+                <div id="worker-performance" class="space-y-4">
+                    <!-- Worker performance details will appear here -->
+                </div>
+            </div>
+
+            <div id="no-validation" class="text-center py-12">
+                <i class="fas fa-clipboard-check text-6xl text-gray-300 mb-4"></i>
+                <p class="text-gray-500">No validation results yet. Run validation to see performance metrics.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weights Tab -->
+    <div id="tab-weights" class="tab-content">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Current Weights -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold mb-4">Current Worker Weights</h2>
+                <div id="weights-list" class="space-y-3">
+                    <!-- Worker weights will be displayed here -->
+                </div>
+            </div>
+
+            <!-- Weight Management -->
+            <div class="space-y-6">
+                <!-- Export Weights -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-xl font-bold mb-3">Export Weights</h3>
+                    <p class="text-gray-600 mb-4">Download current weights as JSON file for backup or transfer.</p>
+                    <a href="/training/weights/export" class="inline-block gradient-bg text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity">
+                        <i class="fas fa-download mr-2"></i>Export Weights
+                    </a>
+                </div>
+
+                <!-- Import Weights -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-xl font-bold mb-3">Import Weights</h3>
+                    <p class="text-gray-600 mb-4">Upload a JSON file to restore previously exported weights.</p>
+                    <form id="import-weights-form">
+                        <input type="file" id="weights-file-input" accept=".json" class="hidden">
+                        <button type="button" id="select-weights-btn" class="bg-gray-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-upload mr-2"></i>Select File
+                        </button>
+                        <button type="submit" id="import-weights-btn" class="hidden gradient-bg text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity ml-2">
+                            <i class="fas fa-check mr-2"></i>Import
+                        </button>
+                    </form>
+                    <p id="weights-filename" class="text-sm text-gray-500 mt-2"></p>
+                </div>
+
+                <!-- Reset Weights -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-xl font-bold mb-3">Reset Weights</h3>
+                    <p class="text-gray-600 mb-4">Reset all worker weights to default values (1.0).</p>
+                    <button id="reset-weights-btn" class="bg-red-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-red-700 transition-colors">
+                        <i class="fas fa-undo mr-2"></i>Reset All Weights
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sessions History Tab -->
+    <div id="tab-sessions" class="tab-content">
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl font-bold">Training History</h2>
+                <button id="refresh-sessions-btn" class="text-primary-600 hover:text-primary-700">
+                    <i class="fas fa-sync-alt mr-2"></i>Refresh
+                </button>
+            </div>
+
+            <div id="sessions-list" class="space-y-4">
+                <!-- Training sessions will be displayed here -->
+            </div>
+
+            <div id="no-sessions" class="hidden text-center py-12">
+                <i class="fas fa-history text-6xl text-gray-300 mb-4"></i>
+                <p class="text-gray-500">No training sessions yet. Start your first training session!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Notification Area -->
+<div id="notification" class="hidden fixed top-4 right-4 max-w-md z-50">
+    <div class="rounded-lg shadow-lg p-4 flex items-center space-x-3">
+        <i class="fas text-xl" id="notification-icon"></i>
+        <div>
+            <p class="font-medium" id="notification-title"></p>
+            <p class="text-sm" id="notification-message"></p>
+        </div>
+        <button onclick="hideNotification()" class="ml-auto">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/training_dashboard.js') }}"></script>
+{% endblock %}

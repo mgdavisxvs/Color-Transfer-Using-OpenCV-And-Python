@@ -26,6 +26,9 @@ from tsm.core.learner import BayesianWeightLearner
 # Import TSM color transfer workers
 from tsm_workers import create_color_transfer_workers
 
+# Import training routes
+from training_routes import training_bp, init_training
+
 # Initialize Flask app
 app = Flask(__name__)
 
@@ -54,6 +57,12 @@ aggregator = Aggregator(
 # Register workers
 for worker in create_color_transfer_workers():
     worker_pool.register_worker(worker)
+
+# Initialize training system
+init_training(worker_pool, weight_learner, db_path="tsm_training.db")
+
+# Register training blueprint
+app.register_blueprint(training_bp)
 
 # Load saved weights if they exist
 if app.config['WEIGHTS_FILE'].exists():
@@ -340,19 +349,23 @@ def worker_stats():
 
         # Add current weights
         workers_detailed = []
+        weights = {}
         for worker_stat in stats['worker_statistics']:
             worker_id = worker_stat['worker_id']
             learner_stats = weight_learner.get_statistics(worker_id)
+            current_weight = float(weight_learner.get_weight(worker_id))
 
             detailed = {
                 **worker_stat,
-                'current_weight': float(weight_learner.get_weight(worker_id)),
+                'current_weight': current_weight,
                 'learner_stats': learner_stats if learner_stats else {}
             }
             workers_detailed.append(detailed)
+            weights[worker_id] = current_weight
 
         return jsonify({
             'success': True,
+            'weights': weights,
             'statistics': {
                 **stats,
                 'worker_statistics': workers_detailed

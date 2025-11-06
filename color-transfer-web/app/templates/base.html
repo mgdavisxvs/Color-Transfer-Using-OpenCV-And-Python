@@ -135,6 +135,9 @@
                     <a href="{{ url_for('gallery') }}" class="text-gray-700 hover:text-primary-600 transition-colors font-medium">
                         <i class="fas fa-images mr-2"></i>Gallery
                     </a>
+                    <a href="{{ url_for('training.training_dashboard') }}" class="text-gray-700 hover:text-primary-600 transition-colors font-medium">
+                        <i class="fas fa-graduation-cap mr-2"></i>Training
+                    </a>
                     <a href="{{ url_for('about') }}" class="text-gray-700 hover:text-primary-600 transition-colors font-medium">
                         <i class="fas fa-info-circle mr-2"></i>About
                     </a>
@@ -160,6 +163,9 @@
                 </a>
                 <a href="{{ url_for('gallery') }}" class="block py-2 text-gray-700 hover:text-primary-600">
                     <i class="fas fa-images mr-2"></i>Gallery
+                </a>
+                <a href="{{ url_for('training.training_dashboard') }}" class="block py-2 text-gray-700 hover:text-primary-600">
+                    <i class="fas fa-graduation-cap mr-2"></i>Training
                 </a>
                 <a href="{{ url_for('about') }}" class="block py-2 text-gray-700 hover:text-primary-600">
                     <i class="fas fa-info-circle mr-2"></i>About
@@ -188,6 +194,7 @@
                     <ul class="space-y-2">
                         <li><a href="{{ url_for('index') }}" class="text-gray-600 hover:text-primary-600 text-sm">Home</a></li>
                         <li><a href="{{ url_for('gallery') }}" class="text-gray-600 hover:text-primary-600 text-sm">Gallery</a></li>
+                        <li><a href="{{ url_for('training.training_dashboard') }}" class="text-gray-600 hover:text-primary-600 text-sm">Training</a></li>
                         <li><a href="{{ url_for('about') }}" class="text-gray-600 hover:text-primary-600 text-sm">About</a></li>
                     </ul>
                 </div>
