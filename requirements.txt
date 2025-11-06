@@ -1,0 +1,11 @@
+# Core dependencies for color transfer algorithm
+numpy>=1.21.0,<2.0.0
+opencv-python>=4.5.0,<5.0.0
+imutils>=0.5.4,<1.0.0
+
+# Development dependencies (uncomment if needed)
+# pytest>=7.0.0
+# pytest-cov>=3.0.0
+# black>=22.0.0
+# mypy>=0.950
+# pylint>=2.13.0
