@@ -1,0 +1,38 @@
+# Development dependencies for TSM framework
+
+-r requirements.txt
+
+# Testing
+pytest>=7.4.0,<8.0.0
+pytest-asyncio>=0.21.0,<1.0.0
+pytest-cov>=4.1.0,<5.0.0
+pytest-timeout>=2.1.0,<3.0.0
+pytest-mock>=3.11.0,<4.0.0
+
+# Code quality
+black>=23.0.0,<24.0.0
+isort>=5.12.0,<6.0.0
+mypy>=1.4.0,<2.0.0
+pylint>=2.17.0,<3.0.0
+flake8>=6.0.0,<7.0.0
+
+# Type stubs
+types-redis>=4.5.0
+types-pyyaml>=6.0.0
+types-psutil>=5.9.0
+
+# Documentation
+sphinx>=7.0.0,<8.0.0
+sphinx-rtd-theme>=1.2.0,<2.0.0
+sphinx-autodoc-typehints>=1.23.0,<2.0.0
+
+# Performance testing
+locust>=2.15.0,<3.0.0
+
+# Security scanning
+bandit>=1.7.0,<2.0.0
+safety>=2.3.0,<3.0.0
+
+# Utilities
+ipython>=8.12.0,<9.0.0
+jupyter>=1.0.0,<2.0.0
