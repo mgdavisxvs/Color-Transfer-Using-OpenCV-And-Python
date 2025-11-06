@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Gallery{% endblock %}
+
+{% block content %}
+<!-- Gallery Header -->
+<div class="gradient-bg text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">
+            <i class="fas fa-images mr-3"></i>Gallery
+        </h1>
+        <p class="text-xl text-gray-100 max-w-2xl mx-auto">
+            Recent color transfer transformations
+        </p>
+    </div>
+</div>
+
+<!-- Gallery Content -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    {% if results %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for result in results %}
+            <div class="image-card bg-white rounded-xl shadow-lg overflow-hidden group">
+                <div class="aspect-w-16 aspect-h-9 bg-gray-200">
+                    <img src="{{ result.url }}" alt="Result" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300">
+                </div>
+                <div class="p-4">
+                    <div class="flex items-center justify-between text-sm text-gray-600 mb-3">
+                        <span>
+                            <i class="fas fa-clock mr-2"></i>{{ result.timestamp }}
+                        </span>
+                    </div>
+                    <a href="/download/{{ result.filename }}" class="w-full bg-primary-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-primary-700 transition-colors inline-flex items-center justify-center">
+                        <i class="fas fa-download mr-2"></i>Download
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-20">
+            <div class="max-w-md mx-auto">
+                <i class="fas fa-images text-6xl text-gray-300 mb-6"></i>
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">No Results Yet</h2>
+                <p class="text-gray-600 mb-8">
+                    Transform some images to see them appear in the gallery
+                </p>
+                <a href="{{ url_for('index') }}" class="gradient-bg text-white px-8 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity inline-flex items-center">
+                    <i class="fas fa-upload mr-2"></i>
+                    Upload Images
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

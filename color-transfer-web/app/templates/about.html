@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block title %}About{% endblock %}
+
+{% block content %}
+<!-- About Header -->
+<div class="gradient-bg text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">
+            About Color Transfer
+        </h1>
+        <p class="text-xl text-gray-100 max-w-2xl mx-auto">
+            Learn about the technology and algorithm behind the magic
+        </p>
+    </div>
+</div>
+
+<!-- About Content -->
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <!-- Introduction -->
+    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+        <h2 class="text-3xl font-bold text-gray-900 mb-6">
+            <i class="fas fa-info-circle text-primary-600 mr-3"></i>
+            What is Color Transfer?
+        </h2>
+        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+            Color Transfer is an advanced image processing technique that transfers the color scheme
+            from one image (source) to another image (target). This creates visually stunning results
+            while preserving the structure and content of the target image.
+        </p>
+        <p class="text-lg text-gray-700 leading-relaxed">
+            Our implementation uses the LAB color space, which is designed to be perceptually uniform,
+            meaning that the same amount of numerical change in color values corresponds to roughly
+            the same amount of visually perceived change.
+        </p>
+    </div>
+
+    <!-- How It Works -->
+    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+        <h2 class="text-3xl font-bold text-gray-900 mb-6">
+            <i class="fas fa-cogs text-purple-600 mr-3"></i>
+            How It Works
+        </h2>
+        <div class="space-y-6">
+            <div class="flex items-start">
+                <div class="flex-shrink-0 w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 font-bold mr-4">
+                    1
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Color Space Conversion</h3>
+                    <p class="text-gray-700">
+                        Both images are converted from RGB to LAB color space, which separates
+                        lightness from color information.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex items-start">
+                <div class="flex-shrink-0 w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-bold mr-4">
+                    2
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Statistical Analysis</h3>
+                    <p class="text-gray-700">
+                        We compute the mean and standard deviation of each color channel
+                        for both source and target images.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex items-start">
+                <div class="flex-shrink-0 w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold mr-4">
+                    3
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Color Matching</h3>
+                    <p class="text-gray-700">
+                        The target image colors are adjusted to match the statistical distribution
+                        of the source image colors.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex items-start">
+                <div class="flex-shrink-0 w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600 font-bold mr-4">
+                    4
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Convert Back</h3>
+                    <p class="text-gray-700">
+                        The transformed image is converted back to RGB color space,
+                        resulting in the final output.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Technical Details -->
+    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+        <h2 class="text-3xl font-bold text-gray-900 mb-6">
+            <i class="fas fa-code text-green-600 mr-3"></i>
+            Technical Details
+        </h2>
+        <div class="bg-gray-50 rounded-lg p-6 mb-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-3">Key Features:</h3>
+            <ul class="space-y-2 text-gray-700">
+                <li class="flex items-start">
+                    <i class="fas fa-check text-green-600 mr-3 mt-1"></i>
+                    <span><strong>LAB Color Space:</strong> Perceptually uniform color representation</span>
+                </li>
+                <li class="flex items-start">
+                    <i class="fas fa-check text-green-600 mr-3 mt-1"></i>
+                    <span><strong>Statistical Transfer:</strong> Mean and standard deviation matching</span>
+                </li>
+                <li class="flex items-start">
+                    <i class="fas fa-check text-green-600 mr-3 mt-1"></i>
+                    <span><strong>Division by Zero Protection:</strong> Epsilon value for numerical stability</span>
+                </li>
+                <li class="flex items-start">
+                    <i class="fas fa-check text-green-600 mr-3 mt-1"></i>
+                    <span><strong>Intensity Clipping:</strong> Ensures valid output color ranges</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="bg-gray-50 rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-3">Technology Stack:</h3>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <p class="text-sm font-medium text-gray-600 mb-2">Backend:</p>
+                    <ul class="text-sm text-gray-700 space-y-1">
+                        <li><i class="fab fa-python mr-2"></i>Python 3.10+</li>
+                        <li><i class="fas fa-flask mr-2"></i>Flask</li>
+                        <li><i class="fas fa-camera mr-2"></i>OpenCV</li>
+                        <li><i class="fas fa-chart-bar mr-2"></i>NumPy</li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-600 mb-2">Frontend:</p>
+                    <ul class="text-sm text-gray-700 space-y-1">
+                        <li><i class="fab fa-html5 mr-2"></i>HTML5</li>
+                        <li><i class="fas fa-wind mr-2"></i>TailwindCSS</li>
+                        <li><i class="fab fa-js mr-2"></i>JavaScript ES6</li>
+                        <li><i class="fas fa-font-awesome-flag mr-2"></i>Font Awesome</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Use Cases -->
+    <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-3xl font-bold text-gray-900 mb-6">
+            <i class="fas fa-lightbulb text-yellow-600 mr-3"></i>
+            Use Cases
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="border-l-4 border-primary-600 pl-4">
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Photography</h3>
+                <p class="text-gray-700">
+                    Apply the mood and atmosphere of one photo to another
+                </p>
+            </div>
+            <div class="border-l-4 border-purple-600 pl-4">
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Digital Art</h3>
+                <p class="text-gray-700">
+                    Create consistent color palettes across multiple artworks
+                </p>
+            </div>
+            <div class="border-l-4 border-green-600 pl-4">
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Design</h3>
+                <p class="text-gray-700">
+                    Match color schemes between different design elements
+                </p>
+            </div>
+            <div class="border-l-4 border-yellow-600 pl-4">
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Film & Video</h3>
+                <p class="text-gray-700">
+                    Achieve consistent color grading across scenes
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
